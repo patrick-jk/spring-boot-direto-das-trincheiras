@@ -4,6 +4,7 @@ spring:
   threads:
     virtual:
       enabled: true
+
 server:
   servlet:
     context-path: /
