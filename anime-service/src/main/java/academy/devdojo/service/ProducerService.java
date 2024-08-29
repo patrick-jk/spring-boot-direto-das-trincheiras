@@ -33,8 +33,8 @@ public class ProducerService {
     }
     
     public void update(Producer producerToUpdate) {
-        Producer producer = findByIdOrThrowNotFound(producerToUpdate.getId());
-        producer.setCreatedAt(producerToUpdate.getCreatedAt());
-        repository.update(producer);
+        var producer = findByIdOrThrowNotFound(producerToUpdate.getId());
+        producerToUpdate.setCreatedAt(producer.getCreatedAt());
+        repository.update(producerToUpdate);
     }
 }
