@@ -2,17 +2,17 @@ package academy.devdojo.service;
 
 import academy.devdojo.domain.Producer;
 import academy.devdojo.repository.ProducerHardCodedRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+@Service
+@RequiredArgsConstructor
 public class ProducerService {
     private final ProducerHardCodedRepository repository;
-
-    public ProducerService() {
-        this.repository = new ProducerHardCodedRepository();
-    }
 
     public List<Producer> findAll(String name) {
         return name == null ? repository.findAll() : repository.findByName(name);
@@ -31,7 +31,7 @@ public class ProducerService {
         var producer = findByIdOrThrowNotFound(id);
         repository.delete(producer);
     }
-    
+
     public void update(Producer producerToUpdate) {
         var producer = findByIdOrThrowNotFound(producerToUpdate.getId());
         producerToUpdate.setCreatedAt(producer.getCreatedAt());
