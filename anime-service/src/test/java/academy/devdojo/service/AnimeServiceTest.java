@@ -28,11 +28,11 @@ class AnimeServiceTest {
 
     @BeforeEach
     void init() {
-        var hellsing = Anime.builder().id(1L).name("Hellsing").build();
-        var jojoBizarreAdventure = Anime.builder().id(2L).name("Jojo's Bizarre Adventure").build();
-        var kimetsuNoYaiba = Anime.builder().id(3L).name("Kimetsu no Yaiba").build();
+        var fullMetal = Anime.builder().id(1L).name("Full Metal Brotherhood").build();
+        var steinsGate = Anime.builder().id(2L).name("Steins Gate").build();
+        var mashle = Anime.builder().id(3L).name("Mashle").build();
 
-        animeList.addAll(List.of(hellsing, jojoBizarreAdventure, kimetsuNoYaiba));
+        animeList.addAll(List.of(fullMetal, steinsGate, mashle));
     }
 
     @Test

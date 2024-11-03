@@ -14,7 +14,7 @@ public class AnimeData {
 
     {
         var hellsing = Anime.builder().id(1L).name("Hellsing").build();
-        var jojoBizarreAdventure = Anime.builder().id(2L).name("Jojo's Bizarre Adventure").build();
+        var jojoBizarreAdventure = Anime.builder().id(2L).name("JoJo's Bizarre Adventure").build();
         var kimetsuNoYaiba = Anime.builder().id(3L).name("Kimetsu no Yaiba").build();
 
         animes.addAll(List.of(hellsing, jojoBizarreAdventure, kimetsuNoYaiba));
