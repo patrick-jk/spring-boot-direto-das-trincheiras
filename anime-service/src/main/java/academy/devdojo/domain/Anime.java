@@ -1,6 +1,9 @@
 package academy.devdojo.domain;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
