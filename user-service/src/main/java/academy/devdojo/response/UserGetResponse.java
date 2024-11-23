@@ -5,6 +5,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+
 public class UserGetResponse {
     private Long id;
     private String firstName;
