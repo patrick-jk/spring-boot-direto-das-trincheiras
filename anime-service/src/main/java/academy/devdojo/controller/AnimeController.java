@@ -45,9 +45,10 @@ public class AnimeController {
     }
 
     @PostMapping
-    public ResponseEntity<AnimePostResponse> save(@RequestBody AnimePostRequest postRequest) {
-        log.debug("Request to save anime: {}", postRequest);
-        var anime = mapper.toAnime(postRequest);
+    public ResponseEntity<AnimePostResponse> save(@RequestBody AnimePostRequest request) {
+        log.debug("Request to save anime: {}", request);
+
+        var anime = mapper.toAnime(request);
 
         var animeSaved = service.save(anime);
 
@@ -68,6 +69,7 @@ public class AnimeController {
     @PutMapping
     public ResponseEntity<Void> update(@RequestBody AnimePutRequest request) {
         log.debug("Request to update anime: {}", request);
+
         var anime = mapper.toAnime(request);
 
         service.update(anime);
