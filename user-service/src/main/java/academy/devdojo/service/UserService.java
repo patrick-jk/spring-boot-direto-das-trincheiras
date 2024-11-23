@@ -3,9 +3,7 @@ package academy.devdojo.service;
 import academy.devdojo.domain.User;
 import academy.devdojo.repository.UserHardCodedRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -15,7 +13,7 @@ public class UserService {
     private final UserHardCodedRepository repository;
 
     public List<User> findAll(String firstName) {
-        return firstName == null ? repository.findAll() : repository.findByName(firstName);
+        return firstName == null ? repository.findAll() : repository.findByFirstName(firstName);
     }
 
 //    public User findByIdOrThrowNotFound(Long id) {

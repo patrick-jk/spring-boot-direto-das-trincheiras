@@ -21,7 +21,7 @@ public class UserHardCodedRepository {
         return userData.getUsers().stream().filter(user -> user.getId().equals(id)).findFirst();
     }
 
-    public List<User> findByName(String name) {
+    public List<User> findByFirstName(String name) {
         return userData.getUsers().stream().filter(user -> user.getFirstName().equalsIgnoreCase(name)).collect(Collectors.toList());
     }
 
