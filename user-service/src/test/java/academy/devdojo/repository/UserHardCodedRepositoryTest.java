@@ -2,6 +2,7 @@ package academy.devdojo.repository;
 
 import academy.devdojo.commons.UserUtils;
 import academy.devdojo.domain.User;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
@@ -37,5 +38,15 @@ class UserHardCodedRepositoryTest {
 
         var users = repository.findAll();
         assertThat(users).isNotNull().hasSameElementsAs(userList);
+    }
+
+    @Test
+    @DisplayName("findById returns an user with given id")
+    @Order(2)
+    void findById_ReturnsUserById_WhenSuccessful() {
+        BDDMockito.when(userData.getUsers()).thenReturn(userList);
+        var expectedUser = userList.getFirst();
+        var user = repository.findById(expectedUser.getId());
+        Assertions.assertThat(user).isPresent().contains(expectedUser);
     }
 }

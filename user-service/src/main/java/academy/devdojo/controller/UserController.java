@@ -33,17 +33,17 @@ public class UserController {
         return ResponseEntity.ok(userGetResponses);
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<UserGetResponse> findById(@PathVariable Long id) {
-//        log.debug("Request to find user by id: {}", id);
-//
-//        var user = service.findByIdOrThrowNotFound(id);
-//
-//        UserGetResponse userGetResponse = mapper.toUserGetResponse(user);
-//
-//        return ResponseEntity.ok(userGetResponse);
-//    }
-//
+    @GetMapping("/{id}")
+    public ResponseEntity<UserGetResponse> findById(@PathVariable Long id) {
+        log.debug("Request to find user by id: {}", id);
+
+        var user = service.findByIdOrThrowNotFound(id);
+
+        var userGetResponse = mapper.toUserGetResponse(user);
+
+        return ResponseEntity.ok(userGetResponse);
+    }
+
 //    @PostMapping
 //    public ResponseEntity<UserPostResponse> save(@RequestBody UserPostRequest postRequest) {
 //        log.debug("Request to save user: {}", postRequest);
