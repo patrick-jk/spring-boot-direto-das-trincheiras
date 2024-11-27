@@ -25,10 +25,10 @@ public class UserHardCodedRepository {
         return userData.getUsers().stream().filter(user -> user.getFirstName().equalsIgnoreCase(name)).collect(Collectors.toList());
     }
 
-//    public User save(User user) {
-//        userData.getUsers().add(user);
-//        return user;
-//    }
+    public User save(User user) {
+        userData.getUsers().add(user);
+        return user;
+    }
 //
 //    public void delete(User user) {
 //        userData.getUsers().remove(user);

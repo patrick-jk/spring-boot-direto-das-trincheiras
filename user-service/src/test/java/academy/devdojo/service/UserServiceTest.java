@@ -3,6 +3,7 @@ package academy.devdojo.service;
 import academy.devdojo.commons.UserUtils;
 import academy.devdojo.domain.User;
 import academy.devdojo.repository.UserHardCodedRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
@@ -91,5 +92,18 @@ class UserServiceTest {
         assertThatException()
                 .isThrownBy(() -> service.findByIdOrThrowNotFound(expectedUser.getId()))
                 .isInstanceOf(ResponseStatusException.class);
+    }
+
+    @Test
+    @DisplayName("save creates an user")
+    @Order(6)
+    void save_CreatesUser_WhenSuccessful() {
+        var userToSave = userUtils.newUserToSave();
+
+        BDDMockito.when(repository.save(userToSave)).thenReturn(userToSave);
+
+        var savedUser = service.save(userToSave);
+
+        Assertions.assertThat(savedUser).isEqualTo(userToSave).hasNoNullFieldsOrProperties();
     }
 }

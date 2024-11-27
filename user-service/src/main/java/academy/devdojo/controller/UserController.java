@@ -2,7 +2,6 @@ package academy.devdojo.controller;
 
 import academy.devdojo.mapper.UserMapper;
 import academy.devdojo.request.UserPostRequest;
-import academy.devdojo.request.UserPutRequest;
 import academy.devdojo.response.UserGetResponse;
 import academy.devdojo.response.UserPostResponse;
 import academy.devdojo.service.UserService;
@@ -44,18 +43,18 @@ public class UserController {
         return ResponseEntity.ok(userGetResponse);
     }
 
-//    @PostMapping
-//    public ResponseEntity<UserPostResponse> save(@RequestBody UserPostRequest postRequest) {
-//        log.debug("Request to save user: {}", postRequest);
-//
-//        var user = mapper.toUser(postRequest);
-//
-//        var createdUser = service.save(user);
-//
-//        var userPostResponse = mapper.toUserPostResponse(createdUser);
-//
-//        return ResponseEntity.status(HttpStatus.CREATED).body(userPostResponse);
-//    }
+    @PostMapping
+    public ResponseEntity<UserPostResponse> save(@RequestBody UserPostRequest request) {
+        log.debug("Request to save user: {}", request);
+
+        var user = mapper.toUser(request);
+
+        var createdUser = service.save(user);
+
+        var userPostResponse = mapper.toUserPostResponse(createdUser);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(userPostResponse);
+    }
 //
 //    @PutMapping
 //    public ResponseEntity<Void> update(@RequestBody UserPutRequest request) {

@@ -49,4 +49,41 @@ class UserHardCodedRepositoryTest {
         var user = repository.findById(expectedUser.getId());
         Assertions.assertThat(user).isPresent().contains(expectedUser);
     }
+
+    @Test
+    @DisplayName("findByFirstName returns empty list when name is null")
+    @Order(3)
+    void findByName_ReturnsEmptyList_WhenFirstNameIsNull() {
+        BDDMockito.when(userData.getUsers()).thenReturn(userList);
+
+        var users = repository.findByFirstName(null);
+        Assertions.assertThat(users).isNotNull().isEmpty();
+    }
+
+    @Test
+    @DisplayName("findByFirstName returns list with found object when first name exists")
+    @Order(4)
+    void findByName_ReturnsFoundUserInList_WhenFirstNameIsFound() {
+        BDDMockito.when(userData.getUsers()).thenReturn(userList);
+
+        var expectedUser = userList.getFirst();
+        var users = repository.findByFirstName(expectedUser.getFirstName());
+        Assertions.assertThat(users).hasSize(1).contains(expectedUser);
+    }
+
+    @Test
+    @DisplayName("save creates an user")
+    @Order(5)
+    void save_CreatesUser_WhenSuccessful() {
+        BDDMockito.when(userData.getUsers()).thenReturn(userList);
+
+        var userToSave = userUtils.newUserToSave();
+        var user = repository.save(userToSave);
+
+        Assertions.assertThat(user).isEqualTo(userToSave).hasNoNullFieldsOrProperties();
+
+        var userSavedOptional = repository.findById(userToSave.getId());
+
+        Assertions.assertThat(userSavedOptional).isPresent().contains(userToSave);
+    }
 }
