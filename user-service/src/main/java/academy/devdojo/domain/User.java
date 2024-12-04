@@ -6,6 +6,7 @@ import lombok.*;
 @Setter
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 public class User {
     @EqualsAndHashCode.Include
     private Long id;

@@ -132,4 +132,29 @@ class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().json(response));
     }
+
+    @Test
+    @DisplayName("DELETE v1/users/1 removes an user")
+    @Order(7)
+    void delete_RemovesUser_WhenSuccessful() throws Exception {
+        BDDMockito.when(userData.getUsers()).thenReturn(userList);
+        var id = userList.getFirst().getId();
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", id))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("DELETE v1/users/99 throws ResponseStatusException when user is not found")
+    @Order(8)
+    void delete_ThrowsResponseStatusException_WhenUserIsNotFound() throws Exception {
+        BDDMockito.when(userData.getUsers()).thenReturn(userList);
+        var id = 99L;
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", id))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.status().reason("User not found"));
+    }
 }

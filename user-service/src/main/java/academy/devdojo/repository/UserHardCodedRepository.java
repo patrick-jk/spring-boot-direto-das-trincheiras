@@ -29,11 +29,11 @@ public class UserHardCodedRepository {
         userData.getUsers().add(user);
         return user;
     }
-//
-//    public void delete(User user) {
-//        userData.getUsers().remove(user);
-//    }
-//
+
+    public void delete(User user) {
+        userData.getUsers().remove(user);
+    }
+
 //    public void update(User user) {
 //        delete(user);
 //        save(user);
