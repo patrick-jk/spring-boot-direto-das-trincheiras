@@ -157,4 +157,38 @@ class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.status().reason("User not found"));
     }
+
+    @Test
+    @DisplayName("PUT v1/users updates a user")
+    @Order(9)
+    void update_UpdatesUser_WhenSuccessful() throws Exception {
+        BDDMockito.when(userData.getUsers()).thenReturn(userList);
+
+        var request = fileUtils.readResourceFile("user/put-request-user-200.json");
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put(URL)
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("PUT v1/users throws ResponseStatusException when user is not found")
+    @Order(10)
+    void update_ThrowsResponseStatusException_WhenUserIsNotFound() throws Exception {
+        BDDMockito.when(userData.getUsers()).thenReturn(userList);
+        var request = fileUtils.readResourceFile("user/put-request-user-404.json");
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put(URL)
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.status().reason("User not found"));
+    }
 }

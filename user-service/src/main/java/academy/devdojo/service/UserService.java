@@ -31,12 +31,8 @@ public class UserService {
         repository.delete(user);
     }
 
-//    public void update(User user) {
-//        assertUserExists(user.getId());
-//        repository.update(user);
-//    }
-//
-//    public void assertUserExists(Long id) {
-//        findByIdOrThrowNotFound(id);
-//    }
+    public void update(User user) {
+        user = findByIdOrThrowNotFound(user.getId());
+        repository.update(user);
+    }
 }
