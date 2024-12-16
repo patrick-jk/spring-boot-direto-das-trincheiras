@@ -19,7 +19,7 @@ public class AnimeService {
 
     public Anime findByIdOrThrowNotFound(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Anime not found"));
+                .orElseThrow(() -> new NotFoundException("Anime not Found"));
     }
 
     public Anime save(Anime anime) {

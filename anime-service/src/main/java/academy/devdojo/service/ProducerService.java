@@ -19,7 +19,7 @@ public class ProducerService {
 
     public Producer findByIdOrThrowNotFound(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Producer not found"));
+                .orElseThrow(() -> new NotFoundException("Producer not Found"));
     }
 
     public Producer save(Producer producer) {
