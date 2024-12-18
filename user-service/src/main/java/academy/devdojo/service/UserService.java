@@ -18,7 +18,7 @@ public class UserService {
     }
 
     public User findByIdOrThrowNotFound(Long id) {
-        return repository.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
+        return repository.findById(id).orElseThrow(() -> new NotFoundException("User not Found"));
     }
 
     public User save(User user) {
@@ -31,7 +31,11 @@ public class UserService {
     }
 
     public void update(User user) {
-        user = findByIdOrThrowNotFound(user.getId());
+        assertUserExists(user.getId());
         repository.update(user);
+    }
+
+    public void assertUserExists(Long id) {
+        findByIdOrThrowNotFound(id);
     }
 }
