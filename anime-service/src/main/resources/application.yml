@@ -1,6 +1,16 @@
 spring:
+  config:
+    import: optional:classpath:.env[.properties]
   application:
     name: anime-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/anime_service?useTimezone=true&serverTimezone=UTC&createDatabaseIfNotExist=true
+    username: ${ENV_ROOT_USER:root}
+    password: ${ENV_ROOT_PASSWORD:devdojo}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
   threads:
     virtual:
       enabled: true
@@ -18,8 +28,3 @@ server:
   tomcat:
     threads:
       max: 20
-
-database:
-  url: ${DB_URL:localhost}:${DB_PORT:3306}
-  username: ${LOCAL_USERNAME:patrick}
-  password: ${LOCAL_PASSWORD:devdojo}
