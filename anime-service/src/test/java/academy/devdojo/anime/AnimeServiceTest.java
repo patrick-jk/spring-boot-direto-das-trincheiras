@@ -22,7 +22,7 @@ class AnimeServiceTest {
     @InjectMocks
     private AnimeService service;
     @Mock
-    private AnimeHardCodedRepository repository;
+    private AnimeRepository repository;
     private List<Anime> animeList;
     @InjectMocks
     private AnimeUtils animeUtils;
@@ -133,11 +133,10 @@ class AnimeServiceTest {
     @DisplayName("update updates an anime")
     @Order(9)
     void update_UpdatesProducer_WhenSuccessful() {
-        var animeToUpdate = animeList.getFirst();
-        animeToUpdate.setName("Death Note");
+        var animeToUpdate = animeList.getFirst().withName("Death Note");
 
         BDDMockito.when(repository.findById(animeToUpdate.getId())).thenReturn(Optional.of(animeToUpdate));
-        BDDMockito.doNothing().when(repository).update(animeToUpdate);
+        BDDMockito.when(repository.save(animeToUpdate)).thenReturn(animeToUpdate);
 
         Assertions.assertThatNoException().isThrownBy(() -> service.update(animeToUpdate));
     }
