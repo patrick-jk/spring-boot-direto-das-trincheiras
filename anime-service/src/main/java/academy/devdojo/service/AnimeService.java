@@ -2,7 +2,7 @@ package academy.devdojo.service;
 
 import academy.devdojo.domain.Anime;
 import academy.devdojo.exception.NotFoundException;
-import academy.devdojo.repository.AnimeHardCodedRepository;
+import academy.devdojo.repository.AnimeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AnimeService {
-    private final AnimeHardCodedRepository repository;
+    private final AnimeRepository repository;
 
     public List<Anime> findAll(String name) {
         return name == null ? repository.findAll() : repository.findByName(name);
@@ -33,7 +33,7 @@ public class AnimeService {
 
     public void update(Anime animeToUpdate) {
         assertAnimeExists(animeToUpdate.getId());
-        repository.update(animeToUpdate);
+        repository.save(animeToUpdate);
     }
 
     public void assertAnimeExists(Long id) {
