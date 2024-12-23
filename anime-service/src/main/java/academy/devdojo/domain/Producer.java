@@ -12,13 +12,13 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Entity
+//@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 public class Producer {
     @EqualsAndHashCode.Include
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private LocalDateTime createdAt;
