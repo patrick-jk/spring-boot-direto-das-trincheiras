@@ -24,7 +24,7 @@ class ProducerServiceTest {
     @InjectMocks
     private ProducerService service;
     @Mock
-    private ProducerHardCodedRepository repository;
+    private ProducerRepository repository;
     private List<Producer> producerList;
     @InjectMocks
     private ProducerUtils producerUtils;
@@ -132,11 +132,10 @@ class ProducerServiceTest {
     @DisplayName("update updates a producer")
     @Order(9)
     void update_UpdatesProducer_WhenSuccessful() {
-        var producerToUpdate = this.producerList.getFirst();
-        producerToUpdate.setName("Aniplex");
+        var producerToUpdate = this.producerList.getFirst().withName("Aniplex");
 
         BDDMockito.when(repository.findById(producerToUpdate.getId())).thenReturn(Optional.of(producerToUpdate));
-        BDDMockito.doNothing().when(repository).update(producerToUpdate);
+        BDDMockito.when(repository.save(producerToUpdate)).thenReturn(producerToUpdate);
 
         Assertions.assertThatNoException().isThrownBy(() -> service.update(producerToUpdate));
     }
