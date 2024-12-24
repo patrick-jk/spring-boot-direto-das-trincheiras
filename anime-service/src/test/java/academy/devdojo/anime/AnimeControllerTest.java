@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -110,7 +109,6 @@ class AnimeControllerTest {
     @DisplayName("GET v1/animes/99 throws NotFound 404 when anime is not found")
     @Order(5)
     void findById_ThrowsNotFound_WhenAnimeIsNotFound() throws Exception {
-        BDDMockito.when(repository.findById(ArgumentMatchers.anyLong())).thenReturn(Optional.empty());
         var response = fileUtils.readResourceFile("anime/get-anime-by-id-404.json");
 
         var id = 99L;
@@ -169,7 +167,7 @@ class AnimeControllerTest {
 
     @Test
     @DisplayName("PUT v1/animes updates an anime")
-    @Order(8)
+    @Order(9)
     void update_UpdatesProducer_WhenSuccessful() throws Exception {
         var request = fileUtils.readResourceFile("anime/put-request-anime-200.json");
         var id = 1L;
