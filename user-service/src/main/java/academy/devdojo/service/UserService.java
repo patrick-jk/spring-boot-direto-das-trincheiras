@@ -22,6 +22,7 @@ public class UserService {
         return repository.findById(id).orElseThrow(() -> new NotFoundException("User not Found"));
     }
 
+    //    @Transactional(rollbackFor = Exception.class)
     public User save(User user) {
         assertEmailDoesNotExists(user.getEmail());
         return repository.save(user);
