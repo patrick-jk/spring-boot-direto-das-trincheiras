@@ -58,15 +58,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userPostResponse);
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-        log.debug("Request to delete user by id: {}", id);
-
-        service.delete(id);
-
-        return ResponseEntity.noContent().build();
-    }
-
     @PutMapping
     public ResponseEntity<Void> update(@RequestBody @Valid UserPutRequest request) {
         log.debug("Request to update user: {}", request);
@@ -74,6 +65,15 @@ public class UserController {
         var user = mapper.toUser(request);
 
         service.update(user);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        log.debug("Request to delete user by id: {}", id);
+
+        service.delete(id);
 
         return ResponseEntity.noContent().build();
     }
