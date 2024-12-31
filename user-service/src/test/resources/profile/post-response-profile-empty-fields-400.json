@@ -1,0 +1,6 @@
+{
+  "timestamp": "2024-12-31T12:56:02.121+00:00",
+  "status": 400,
+  "error": "Bad Request",
+  "path": "/v1/profiles"
+}

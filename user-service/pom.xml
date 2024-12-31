@@ -20,6 +20,8 @@
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <commons-core.version>0.0.1-SNAPSHOT</commons-core.version>
         <mysql-connector-j.version>9.1.0</mysql-connector-j.version>
+        <datasource-proxy-spring-boot-starter.version>1.9.2</datasource-proxy-spring-boot-starter.version>
+        <json-unit-assertj.version>3.4.1</json-unit-assertj.version>
     </properties>
 
     <dependencies>
@@ -73,12 +75,19 @@
         <dependency>
             <groupId>com.github.gavlyukovskiy</groupId>
             <artifactId>datasource-proxy-spring-boot-starter</artifactId>
-            <version>1.9.2</version>
+            <version>${datasource-proxy-spring-boot-starter.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.javacrumbs.json-unit</groupId>
+            <artifactId>json-unit-assertj</artifactId>
+            <version>${json-unit-assertj.version}</version>
             <scope>test</scope>
         </dependency>
 

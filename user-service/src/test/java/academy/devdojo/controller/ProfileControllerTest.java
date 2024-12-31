@@ -100,7 +100,7 @@ class ProfileControllerTest {
     @ParameterizedTest
     @MethodSource("postProfileBadRequestSource")
     @DisplayName("POST v1/profiles returns bad request when fields are invalid")
-    @Order(11)
+    @Order(4)
     void save_ReturnsBadRequest_WhenFieldsAreInvalid(String fileName, List<String> errors) throws Exception {
         var request = fileUtils.readResourceFile("profile/%s".formatted(fileName));
 
