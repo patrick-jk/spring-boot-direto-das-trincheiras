@@ -37,8 +37,8 @@ class ProfileControllerIT extends IntegrationTestConfig {
 
     @Test
     @DisplayName("GET v1/profiles returns a list with all profiles")
-    @Sql(value = "/sql/init_two_profiles.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(value = "/sql/clean_profiles.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(value = "/sql/profile/init_two_profiles.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/profile/clean_profiles.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Order(1)
     void findAll_ReturnsAllProfiles_WhenSuccessful() {
         var typeReference = new ParameterizedTypeReference<List<ProfileGetResponse>>() {};
@@ -72,7 +72,7 @@ class ProfileControllerIT extends IntegrationTestConfig {
     @Test
     @DisplayName("POST v1/profiles creates an profile")
     @Order(3)
-    void save_CreatesProfile_WhenSuccessful() throws Exception {
+    void save_CreatesProfile_WhenSuccessful() {
         var request = fileUtils.readResourceFile("profile/post-request-profile-200.json");
         var profileEntity = buildHttpEntity(request);
         var responseEntity = testRestTemplate.exchange(URL, POST, profileEntity, ProfilePostResponse.class);
@@ -86,7 +86,7 @@ class ProfileControllerIT extends IntegrationTestConfig {
     @MethodSource("postProfileBadRequestSource")
     @DisplayName("POST v1/profiles returns bad request when fields are invalid")
     @Order(4)
-    void save_ReturnsBadRequest_WhenFieldsAreInvalid(String requestFile, String responseFile) throws Exception {
+    void save_ReturnsBadRequest_WhenFieldsAreInvalid(String requestFile, String responseFile) {
         var request = fileUtils.readResourceFile("profile/%s".formatted(requestFile));
         var expectedResponse = fileUtils.readResourceFile("profile/%s".formatted(responseFile));
         var profileEntity = buildHttpEntity(request);
