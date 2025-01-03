@@ -1,11 +1,12 @@
 package academy.devdojo.controller;
 
 import academy.devdojo.commons.FileUtils;
-import academy.devdojo.commons.UserUtils;
 import academy.devdojo.config.IntegrationTestConfig;
+import academy.devdojo.repository.UserRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import net.javacrumbs.jsonunit.assertj.JsonAssertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,11 +19,11 @@ import org.springframework.test.context.jdbc.Sql;
 class UserControllerRestAssuredIT extends IntegrationTestConfig {
     private static final String URL = "/v1/users";
     @Autowired
-    private UserUtils userUtils;
-    @Autowired
     private FileUtils fileUtils;
     @LocalServerPort
     private int port;
+    @Autowired
+    private UserRepository repository;
 
     @BeforeEach
     void init() {
@@ -32,9 +33,9 @@ class UserControllerRestAssuredIT extends IntegrationTestConfig {
 
     @Test
     @DisplayName("GET v1/users returns a list with all users when argument is null")
-    @Order(1)
     @Sql(value = "/sql/user/init_three_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Order(1)
     void findAll_ReturnsAllUsers_WhenArgumentIsNull() {
         var expectedResponse = fileUtils.readResourceFile("user/get-user-null-first-name-200.json");
 
@@ -59,50 +60,79 @@ class UserControllerRestAssuredIT extends IntegrationTestConfig {
                 .isEqualTo(expectedResponse);
     }
 
-//    @Test
-//    @DisplayName("GET v1/users?firstName=John returns list with found object when first name exists")
-//    @Order(2)
-//    @Sql(value = "/sql/user/init_three_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-//    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-//    void findAll_ReturnsFoundUserInList_WhenFirstNameIsFound() {
-//        var expectedResponse = fileUtils.readResourceFile("user/get-user-john-first-name-200.json");
-//        var firstName = "John";
-//
-//        var response = RestAssured.given()
-//                .contentType(ContentType.JSON).accept(ContentType.JSON)
-//                .queryParam("firstName", firstName)
-//                .when()
-//                .get(URL)
-//                .then()
-//                .statusCode(HttpStatus.OK.value())
-//                .log().all()
-//                .extract().response().body().asString();
-//
-//        JsonAssertions.assertThatJson(response)
-//                .and(users -> users.node("[0].id").asNumber().isPositive());
-//
-//        JsonAssertions.assertThatJson(response)
-//                .whenIgnoringPaths("[*].id")
-//                .isEqualTo(expectedResponse);
-//    }
+    @Test
+    @DisplayName("GET v1/users?firstName=John returns list with found object when first name exists")
+    @Sql(value = "/sql/user/init_three_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Order(2)
+    void findAll_ReturnsFoundUserInList_WhenFirstNameIsFound() {
+        var expectedResponse = fileUtils.readResourceFile("user/get-user-john-first-name-200.json");
+        var firstName = "John";
 
-//    @Test
-//    @DisplayName("GET v1/users?firstName=x returns empty list when name is not found")
-//    @Order(3)
-//    void findAll_ReturnsEmptyList_WhenFirstNameIsNotFound() throws Exception {
-//        var response = fileUtils.readResourceFile("user/get-user-x-first-name-200.json");
-//        var firstName = "x";
-//
-//    }
-//
-//    @Test
-//    @DisplayName("GET v1/users/1 returns an user with given id")
-//    @Order(4)
-//    void findById_ReturnsUserById_WhenSuccessful() throws Exception {
-//        var response = fileUtils.readResourceFile("user/get-user-by-id-200.json");
-//        var id = 1L;
-//
-//    }
+        var response = RestAssured.given()
+                .contentType(ContentType.JSON).accept(ContentType.JSON)
+                .queryParam("firstName", firstName)
+                .when()
+                .get(URL)
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .log().all()
+                .extract().response().body().asString();
+
+        JsonAssertions.assertThatJson(response)
+                .whenIgnoringPaths("[*].id")
+                .isEqualTo(expectedResponse);
+    }
+
+    @Test
+    @DisplayName("GET v1/users?firstName=x returns empty list when name is not found")
+    @Sql(value = "/sql/user/init_three_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Order(3)
+    void findAll_ReturnsEmptyList_WhenFirstNameIsNotFound() {
+        var expectedResponse = fileUtils.readResourceFile("user/get-user-x-first-name-200.json");
+        var firstName = "x";
+
+        var response = RestAssured.given()
+                .contentType(ContentType.JSON).accept(ContentType.JSON)
+                .queryParam("firstName", firstName)
+                .when()
+                .get(URL)
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .log().all()
+                .extract().response().body().asString();
+
+        JsonAssertions.assertThatJson(response)
+                .whenIgnoringPaths("[*].id")
+                .isEqualTo(expectedResponse);
+    }
+
+    @Test
+    @DisplayName("GET v1/users/1 returns an user with given id")
+    @Sql(value = "/sql/user/init_three_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Order(4)
+    void findById_ReturnsUserById_WhenSuccessful() {
+        var expectedResponse = fileUtils.readResourceFile("user/get-user-by-id-200.json");
+        var users = repository.findByFirstNameIgnoreCase("John");
+
+        Assertions.assertThat(users).hasSize(1);
+
+        var response = RestAssured.given()
+                .contentType(ContentType.JSON).accept(ContentType.JSON)
+                .pathParam("id", users.getFirst().getId())
+                .when()
+                .get(URL + "/{id}")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .log().all()
+                .extract().response().body().asString();
+
+        JsonAssertions.assertThatJson(response)
+                .whenIgnoringPaths("id")
+                .isEqualTo(expectedResponse);
+    }
 //
 //    @Test
 //    @DisplayName("GET v1/users/99 throws NotFound 404 when user is not found")
