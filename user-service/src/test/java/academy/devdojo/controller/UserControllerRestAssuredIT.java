@@ -290,15 +290,30 @@ class UserControllerRestAssuredIT extends IntegrationTestConfig {
                 .isEqualTo(expectedResponse);
     }
 
-//    @ParameterizedTest
-//    @MethodSource("putUserBadRequestSource")
-//    @DisplayName("PUT v1/users returns bad request when fields are invalid")
-//    @Order(12)
-//    void update_ReturnsBadRequest_WhenFieldsAreInvalid(String fileName, List<String> errors) throws Exception {
-//        var request = fileUtils.readResourceFile("user/%s".formatted(fileName));
-//
-//    }
-//
+    @ParameterizedTest
+    @MethodSource("putUserBadRequestSource")
+    @DisplayName("PUT v1/users returns bad request when fields are invalid")
+    @Order(12)
+    void update_ReturnsBadRequest_WhenFieldsAreInvalid(String requestFile, String responseFile) {
+        var request = fileUtils.readResourceFile("user/%s".formatted(requestFile));
+        var expectedResponse = fileUtils.readResourceFile("user/%s".formatted(responseFile));
+
+        var response = RestAssured.given()
+                .contentType(ContentType.JSON).accept(ContentType.JSON)
+                .body(request)
+                .when()
+                .put(URL)
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .log().all()
+                .extract().response().body().asString();
+
+        JsonAssertions.assertThatJson(response)
+                .whenIgnoringPaths("timestamp")
+                .when(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo(expectedResponse);
+    }
+
     private static Stream<Arguments> postUserBadRequestSource() {
 
         return Stream.of(
@@ -307,16 +322,13 @@ class UserControllerRestAssuredIT extends IntegrationTestConfig {
                 Arguments.of("post-request-user-invalid-email-400.json", "post-response-user-invalid-email-400.json")
         );
     }
-//
-//    private static Stream<Arguments> putUserBadRequestSource() {
-//        var allRequiredErrors = allRequiredErrors();
-//        allRequiredErrors.add("The field 'id' cannot be null");
-//        var emailInvalidError = invalidEmailErrors();
-//
-//        return Stream.of(
-//                Arguments.of("put-request-user-empty-fields-400.json", allRequiredErrors),
-//                Arguments.of("put-request-user-blank-fields-400.json", allRequiredErrors),
-//                Arguments.of("put-request-user-invalid-email-400.json", emailInvalidError)
-//        );
-//    }
+
+    private static Stream<Arguments> putUserBadRequestSource() {
+
+        return Stream.of(
+                Arguments.of("put-request-user-empty-fields-400.json", "put-response-user-empty-fields-400.json"),
+                Arguments.of("put-request-user-blank-fields-400.json", "put-response-user-blank-fields-400.json"),
+                Arguments.of("put-request-user-invalid-email-400.json", "put-response-user-invalid-email-400.json")
+        );
+    }
 }
