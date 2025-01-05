@@ -1,5 +1,6 @@
 package academy.devdojo.controller;
 
+import academy.devdojo.exception.ApiError;
 import academy.devdojo.exception.DefaultErrorMessage;
 import academy.devdojo.mapper.UserMapper;
 import academy.devdojo.request.UserPostRequest;
@@ -76,6 +77,17 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create user",
+            responses = {
+                    @ApiResponse(description = "Save user in the database",
+                            responseCode = "201",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = UserPostResponse.class))
+                    ),
+                    @ApiResponse(description = "Bad Request",
+                            responseCode = "400",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ApiError.class))
+                    )
+            })
     public ResponseEntity<UserPostResponse> save(@RequestBody @Valid UserPostRequest request) {
         log.debug("Request to save user: {}", request);
 
