@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -58,7 +59,7 @@ public class AnimeController {
                             ))
             }
     )
-    public ResponseEntity<Page<AnimeGetResponse>> findAll(Pageable pageable) {
+    public ResponseEntity<Page<AnimeGetResponse>> findAll(@ParameterObject Pageable pageable) {
         log.debug("Request received to list all animes paginated");
 
         var pageAnimeGetResponse = service.findAllPaginated(pageable).map(mapper::toAnimeGetResponse);
