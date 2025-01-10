@@ -5,6 +5,7 @@ import academy.devdojo.request.ProfilePostRequest;
 import academy.devdojo.response.ProfileGetResponse;
 import academy.devdojo.response.ProfilePostResponse;
 import academy.devdojo.service.ProfileService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequestMapping("v1/profiles")
 @RequiredArgsConstructor
 @Slf4j
+@SecurityRequirement(name = "basicAuth")
 public class ProfileController {
     private final ProfileService service;
     private final ProfileMapper mapper;
