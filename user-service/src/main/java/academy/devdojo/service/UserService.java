@@ -3,6 +3,7 @@ package academy.devdojo.service;
 import academy.devdojo.domain.User;
 import academy.devdojo.exception.EmailAlreadyExistsException;
 import academy.devdojo.exception.NotFoundException;
+import academy.devdojo.mapper.UserMapper;
 import academy.devdojo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository repository;
+    private final UserMapper mapper;
 
     public List<User> findAll(String firstName) {
         return firstName == null ? repository.findAll() : repository.findByFirstNameIgnoreCase(firstName);
@@ -24,7 +26,7 @@ public class UserService {
 
     //    @Transactional(rollbackFor = Exception.class)
     public User save(User user) {
-        assertEmailDoesNotExists(user.getEmail());
+        assertEmailDoesNotExist(user.getEmail());
         return repository.save(user);
     }
 
@@ -34,20 +36,23 @@ public class UserService {
     }
 
     public void update(User userToUpdate) {
-        assertUserExists(userToUpdate.getId());
-        assertEmailDoesNotExists(userToUpdate.getEmail(), userToUpdate.getId());
-        repository.save(userToUpdate);
+        assertEmailDoesNotExist(userToUpdate.getEmail(), userToUpdate.getId());
+        var savedUser = findByIdOrThrowNotFound(userToUpdate.getId());
+
+        var userWithPasswordAndRoles = mapper.toUserWithPasswordAndRoles(userToUpdate, userToUpdate.getPassword(), savedUser);
+
+        repository.save(userWithPasswordAndRoles);
     }
 
     public void assertUserExists(Long id) {
         findByIdOrThrowNotFound(id);
     }
 
-    public void assertEmailDoesNotExists(String email) {
+    public void assertEmailDoesNotExist(String email) {
         repository.findByEmail(email).ifPresent(this::throwEmailExistsException);
     }
 
-    public void assertEmailDoesNotExists(String email, Long id) {
+    public void assertEmailDoesNotExist(String email, Long id) {
         repository.findByEmailAndIdNot(email, id).ifPresent(this::throwEmailExistsException);
     }
 
