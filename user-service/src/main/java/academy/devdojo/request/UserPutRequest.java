@@ -25,4 +25,5 @@ public class UserPutRequest {
     @NotBlank(message = "The field 'email' is required")
     @Schema(description = "User's email. Must be unique", example = "tomaraya@slayer.com")
     private String email;
+    private String password;
 }
