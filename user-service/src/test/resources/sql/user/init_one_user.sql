@@ -1,1 +1,1 @@
-insert into user (email, first_name, last_name) values ('jbonham@gmail.com', 'John', 'Bonham')
+insert into user (email, first_name, last_name, roles, password) values ('jbonham@gmail.com', 'John', 'Bonham', 'USER', '{bcrypt}$2a$10$53M8JoFnJrvA6.2fY1xr7uKV1bVFJQHtvftaXDj2Hfsr5BMbnAU/W')

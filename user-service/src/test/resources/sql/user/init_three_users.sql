@@ -1,3 +1,3 @@
-insert into user (email, first_name, last_name) values ('jcooper@skillet.com', 'John', 'Cooper');
-insert into user (email, first_name, last_name) values ('billyjoe@greenday.com', 'Billy', 'Joe');
-insert into user (email, first_name, last_name) values ('neilpeart@rush.com', 'Neil', 'Peart');
+insert into user (email, first_name, last_name, roles, password) values ('jcooper@skillet.com', 'John', 'Cooper', 'USER', '{bcrypt}$2a$10$53M8JoFnJrvA6.2fY1xr7uKV1bVFJQHtvftaXDj2Hfsr5BMbnAU/W');
+insert into user (email, first_name, last_name, roles, password) values ('billyjoe@greenday.com', 'Billy', 'Joe', 'USER', '{bcrypt}$2a$10$53M8JoFnJrvA6.2fY1xr7uKV1bVFJQHtvftaXDj2Hfsr5BMbnAU/W');
+insert into user (email, first_name, last_name, roles, password) values ('neilpeart@rush.com', 'Neil', 'Peart', 'USER', '{bcrypt}$2a$10$53M8JoFnJrvA6.2fY1xr7uKV1bVFJQHtvftaXDj2Hfsr5BMbnAU/W');
