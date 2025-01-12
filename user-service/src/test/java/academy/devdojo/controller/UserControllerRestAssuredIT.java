@@ -3,6 +3,7 @@ package academy.devdojo.controller;
 import academy.devdojo.commons.FileUtils;
 import academy.devdojo.config.IntegrationTestConfig;
 import academy.devdojo.config.RestAssuredConfig;
+import academy.devdojo.exception.NotFoundException;
 import academy.devdojo.repository.UserRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.stream.Stream;
@@ -29,6 +31,8 @@ class UserControllerRestAssuredIT extends IntegrationTestConfig {
     private static final String URL = "/v1/users";
     @Autowired
     private FileUtils fileUtils;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository repository;
 
@@ -205,10 +209,12 @@ class UserControllerRestAssuredIT extends IntegrationTestConfig {
 
     @Test
     @DisplayName("DELETE v1/users/1 removes an user")
-    @Sql(value = "/sql/user/init_one_user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/init_one_login_admin_user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Order(7)
     void delete_RemovesUser_WhenSuccessful() {
+        RestAssured.requestSpecification = requestSpecificationAdminUser;
+
         var id = repository.findAll().getFirst().getId();
 
         RestAssured.given()
@@ -223,8 +229,12 @@ class UserControllerRestAssuredIT extends IntegrationTestConfig {
 
     @Test
     @DisplayName("DELETE v1/users/99 throws NotFound when user is not found")
+    @Sql(value = "/sql/user/init_one_login_admin_user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Order(8)
     void delete_ThrowsNotFound_WhenUserIsNotFound() {
+        RestAssured.requestSpecification = requestSpecificationAdminUser;
+
         var expectedResponse = fileUtils.readResourceFile("user/delete-user-by-id-404.json");
 
         var id = 99L;
@@ -242,12 +252,14 @@ class UserControllerRestAssuredIT extends IntegrationTestConfig {
 
     @Test
     @DisplayName("PUT v1/users updates a user")
-    @Sql(value = "/sql/user/init_one_user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/init_one_login_regular_user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Order(9)
     void update_UpdatesUser_WhenSuccessful() {
         var request = fileUtils.readResourceFile("user/put-request-user-200.json");
-        var users = repository.findByFirstNameIgnoreCase("John");
+        var users = repository.findByFirstNameIgnoreCase("Neil");
+
+        var oldUser = users.getFirst();
 
         Assertions.assertThat(users).hasSize(1);
 
@@ -261,10 +273,17 @@ class UserControllerRestAssuredIT extends IntegrationTestConfig {
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value())
                 .log().all();
+
+        var updatedUser = repository.findById(oldUser.getId()).orElseThrow(() -> new NotFoundException("User not found"));
+        var encryptedPassword = updatedUser.getPassword();
+
+        Assertions.assertThat(passwordEncoder.matches("ledzeppelin", encryptedPassword)).isTrue();
     }
 
     @Test
     @DisplayName("PUT v1/users throws NotFound when user is not found")
+    @Sql(value = "/sql/user/init_one_login_regular_user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Order(10)
     void update_ThrowsNotFound_WhenUserIsNotFound() {
         var request = fileUtils.readResourceFile("user/put-request-user-404.json");
@@ -284,6 +303,8 @@ class UserControllerRestAssuredIT extends IntegrationTestConfig {
     @ParameterizedTest
     @MethodSource("postUserBadRequestSource")
     @DisplayName("POST v1/users returns bad request when fields are invalid")
+    @Sql(value = "/sql/user/init_one_login_regular_user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Order(11)
     void save_ReturnsBadRequest_WhenFieldsAreInvalid(String requestFile, String responseFile) {
         var request = fileUtils.readResourceFile("user/%s".formatted(requestFile));
@@ -308,6 +329,8 @@ class UserControllerRestAssuredIT extends IntegrationTestConfig {
     @ParameterizedTest
     @MethodSource("putUserBadRequestSource")
     @DisplayName("PUT v1/users returns bad request when fields are invalid")
+    @Sql(value = "/sql/user/init_one_login_regular_user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Order(12)
     void update_ReturnsBadRequest_WhenFieldsAreInvalid(String requestFile, String responseFile) {
         var request = fileUtils.readResourceFile("user/%s".formatted(requestFile));

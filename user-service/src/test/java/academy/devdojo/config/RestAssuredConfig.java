@@ -19,13 +19,13 @@ public class RestAssuredConfig {
     public RequestSpecification requestSpecificationRegularUser() {
         return RestAssured.given()
                 .baseUri(BASE_URI + port)
-                .auth().preemptive().basic(REGULAR_USERNAME, PASSWORD);
+                .auth().basic(REGULAR_USERNAME, PASSWORD);
     }
 
     @Bean(name = "requestSpecificationAdminUser")
     public RequestSpecification requestSpecificationAdminUser() {
         return RestAssured.given()
                 .baseUri(BASE_URI + port)
-                .auth().preemptive().basic(ADMIN_USERNAME, PASSWORD);
+                .auth().basic(ADMIN_USERNAME, PASSWORD);
     }
 }
