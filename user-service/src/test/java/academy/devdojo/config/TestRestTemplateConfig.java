@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
+import static academy.devdojo.commons.Constants.*;
+
 @TestConfiguration
 @Lazy
 public class TestRestTemplateConfig {
@@ -15,9 +17,9 @@ public class TestRestTemplateConfig {
 
     @Bean
     public TestRestTemplate testRestTemplate() {
-        var uri = new DefaultUriBuilderFactory("http://localhost:" + port);
+        var uri = new DefaultUriBuilderFactory(BASE_URI + port);
         var testRestTemplate = new TestRestTemplate()
-                .withBasicAuth("max.cavalera@soulfly.com", "test");
+                .withBasicAuth(REGULAR_USERNAME, PASSWORD);
         testRestTemplate.setUriTemplateHandler(uri);
 
         return testRestTemplate;
