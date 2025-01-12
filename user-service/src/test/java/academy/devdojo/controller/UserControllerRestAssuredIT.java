@@ -2,9 +2,11 @@ package academy.devdojo.controller;
 
 import academy.devdojo.commons.FileUtils;
 import academy.devdojo.config.IntegrationTestConfig;
+import academy.devdojo.config.RestAssuredConfig;
 import academy.devdojo.repository.UserRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 import net.javacrumbs.jsonunit.assertj.JsonAssertions;
 import net.javacrumbs.jsonunit.core.Option;
 import org.assertj.core.api.Assertions;
@@ -14,28 +16,33 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.stream.Stream;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = RestAssuredConfig.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserControllerRestAssuredIT extends IntegrationTestConfig {
     private static final String URL = "/v1/users";
     @Autowired
     private FileUtils fileUtils;
-    @LocalServerPort
-    private int port;
     @Autowired
     private UserRepository repository;
 
+    @Autowired
+    @Qualifier(value = "requestSpecificationRegularUser")
+    private RequestSpecification requestSpecificationRegularUser;
+
+    @Autowired
+    @Qualifier(value = "requestSpecificationAdminUser")
+    private RequestSpecification requestSpecificationAdminUser;
+
     @BeforeEach
-    void init() {
-        RestAssured.baseURI = "http://localhost";
-        RestAssured.port = port;
+    void setUrl() {
+        RestAssured.requestSpecification = requestSpecificationRegularUser;
     }
 
     @Test
@@ -44,6 +51,8 @@ class UserControllerRestAssuredIT extends IntegrationTestConfig {
     @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Order(1)
     void findAll_ReturnsAllUsers_WhenArgumentIsNull() {
+        RestAssured.requestSpecification = requestSpecificationAdminUser;
+
         var expectedResponse = fileUtils.readResourceFile("user/get-user-null-first-name-200.json");
 
         var response = RestAssured.given()
@@ -73,6 +82,8 @@ class UserControllerRestAssuredIT extends IntegrationTestConfig {
     @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Order(2)
     void findAll_ReturnsFoundUserInList_WhenFirstNameIsFound() {
+        RestAssured.requestSpecification = requestSpecificationAdminUser;
+
         var expectedResponse = fileUtils.readResourceFile("user/get-user-john-first-name-200.json");
         var firstName = "John";
 
@@ -97,6 +108,8 @@ class UserControllerRestAssuredIT extends IntegrationTestConfig {
     @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Order(3)
     void findAll_ReturnsEmptyList_WhenFirstNameIsNotFound() {
+        RestAssured.requestSpecification = requestSpecificationAdminUser;
+
         var expectedResponse = fileUtils.readResourceFile("user/get-user-x-first-name-200.json");
         var firstName = "x";
 
@@ -143,6 +156,8 @@ class UserControllerRestAssuredIT extends IntegrationTestConfig {
 
     @Test
     @DisplayName("GET v1/users/99 throws NotFound 404 when user is not found")
+    @Sql(value = "/sql/user/init_three_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Order(5)
     void findById_ThrowsNotFound_WhenUserIsNotFound() {
         var expectedResponse = fileUtils.readResourceFile("user/get-user-by-id-404.json");

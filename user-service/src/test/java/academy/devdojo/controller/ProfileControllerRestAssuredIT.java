@@ -31,6 +31,7 @@ class ProfileControllerRestAssuredIT extends IntegrationTestConfig {
     private static final String URL = "/v1/profiles";
     @Autowired
     private FileUtils fileUtils;
+
     @Autowired
     @Qualifier(value = "requestSpecificationRegularUser")
     private RequestSpecification requestSpecificationRegularUser;
