@@ -1,6 +1,7 @@
 package academy.devdojo.producer;
 
 import academy.devdojo.domain.Producer;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import java.util.List;
 @RequestMapping("v1/producers")
 @Slf4j
 @RequiredArgsConstructor
+@SecurityRequirement(name = "basicAuth")
 public class ProducerController {
     private final ProducerMapper mapper;
     private final ProducerService service;
