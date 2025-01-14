@@ -1,18 +1,16 @@
 package academy.devdojo.anime;
 
-import academy.devdojo.exception.DefaultErrorMessage;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import academy.devdojo.api.AnimeControllerApi;
+import academy.devdojo.dto.*;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,20 +25,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Anime API", description = "Anime related endpoints")
 @SecurityRequirement(name = "basicAuth")
-public class AnimeController {
+public class AnimeController implements AnimeControllerApi {
     private final AnimeMapper mapper;
     private final AnimeService service;
 
+    @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get all animes", description = "Get all animes available in the system",
-            responses = {
-                    @ApiResponse(description = "List all animes",
-                            responseCode = "200",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = AnimeGetResponse.class))
-                            ))
-            }
-    )
     public ResponseEntity<List<AnimeGetResponse>> findAllAnimes(@RequestParam(required = false) String name) {
         log.debug("Request received to list all animes, param name '{}'", name);
 
@@ -51,38 +41,24 @@ public class AnimeController {
         return ResponseEntity.ok(animeGetResponses);
     }
 
+    @Override
     @GetMapping("/paginated")
-    @Operation(summary = "Get all animes paginated", description = "Get all animes available in the system paginated",
-            responses = {
-                    @ApiResponse(description = "List all animes paginated",
-                            responseCode = "200",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = AnimeGetResponse.class))
-                            ))
-            }
-    )
-    public ResponseEntity<Page<AnimeGetResponse>> findAllAnimesPaginated(@ParameterObject Pageable pageable) {
+    public ResponseEntity<PageAnimeGetResponse> findAllAnimesPaginated(
+            @Min(0) @Parameter(name = "page", description = "Zero-based page index (0..N)", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+            @Min(1) @Parameter(name = "size", description = "The size of the page to be returned", in = ParameterIn.QUERY) @Valid @RequestParam(value = "size", required = false, defaultValue = "20") Integer size,
+            @Parameter(name = "sort", description = "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.", in = ParameterIn.QUERY) @Valid @RequestParam(value = "sort", required = false) List<String> sort,
+            @ParameterObject final Pageable pageable
+    ) {
         log.debug("Request received to list all animes paginated");
 
-        var pageAnimeGetResponse = service.findAllPaginated(pageable).map(mapper::toAnimeGetResponse);
+        var jpaPageAnimeGetResponse = service.findAllPaginated(pageable);
+        var pageAnimeGetResponse = mapper.toPageAnimeGetResponse(jpaPageAnimeGetResponse);
 
         return ResponseEntity.ok(pageAnimeGetResponse);
     }
 
+    @Override
     @GetMapping("{id}")
-    @Operation(summary = "Get anime by id",
-            responses = {
-                    @ApiResponse(description = "Get anime by its id",
-                            responseCode = "200",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = AnimeGetResponse.class))
-                    ),
-                    @ApiResponse(description = "Anime Not Found",
-                            responseCode = "404",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = DefaultErrorMessage.class))
-                    )
-            })
     public ResponseEntity<AnimeGetResponse> findAnimeById(@PathVariable Long id) {
         log.debug("Request to find anime by id: {}", id);
 
@@ -93,6 +69,7 @@ public class AnimeController {
         return ResponseEntity.ok(animeGetResponse);
     }
 
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AnimePostResponse> saveAnime(@RequestBody @Valid AnimePostRequest request) {
@@ -107,6 +84,7 @@ public class AnimeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(animePostResponse);
     }
 
+    @Override
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteAnimeById(@PathVariable Long id) {
         log.debug("Request to delete anime by id: {}", id);
@@ -116,6 +94,7 @@ public class AnimeController {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @PutMapping
     public ResponseEntity<Void> updateAnime(@RequestBody @Valid AnimePutRequest request) {
         log.debug("Request to update anime: {}", request);
