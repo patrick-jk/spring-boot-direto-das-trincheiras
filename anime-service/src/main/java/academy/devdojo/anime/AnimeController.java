@@ -41,7 +41,7 @@ public class AnimeController {
                             ))
             }
     )
-    public ResponseEntity<List<AnimeGetResponse>> findAll(@RequestParam(required = false) String name) {
+    public ResponseEntity<List<AnimeGetResponse>> findAllAnimes(@RequestParam(required = false) String name) {
         log.debug("Request received to list all animes, param name '{}'", name);
 
         var animes = service.findAll(name);
@@ -61,7 +61,7 @@ public class AnimeController {
                             ))
             }
     )
-    public ResponseEntity<Page<AnimeGetResponse>> findAll(@ParameterObject Pageable pageable) {
+    public ResponseEntity<Page<AnimeGetResponse>> findAllAnimesPaginated(@ParameterObject Pageable pageable) {
         log.debug("Request received to list all animes paginated");
 
         var pageAnimeGetResponse = service.findAllPaginated(pageable).map(mapper::toAnimeGetResponse);
@@ -83,7 +83,7 @@ public class AnimeController {
                                     schema = @Schema(implementation = DefaultErrorMessage.class))
                     )
             })
-    public ResponseEntity<AnimeGetResponse> findById(@PathVariable Long id) {
+    public ResponseEntity<AnimeGetResponse> findAnimeById(@PathVariable Long id) {
         log.debug("Request to find anime by id: {}", id);
 
         var anime = service.findByIdOrThrowNotFound(id);
@@ -95,7 +95,7 @@ public class AnimeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AnimePostResponse> save(@RequestBody @Valid AnimePostRequest request) {
+    public ResponseEntity<AnimePostResponse> saveAnime(@RequestBody @Valid AnimePostRequest request) {
         log.debug("Request to save anime: {}", request);
 
         var anime = mapper.toAnime(request);
@@ -108,7 +108,7 @@ public class AnimeController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteAnimeById(@PathVariable Long id) {
         log.debug("Request to delete anime by id: {}", id);
 
         service.delete(id);
@@ -117,7 +117,7 @@ public class AnimeController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> update(@RequestBody @Valid AnimePutRequest request) {
+    public ResponseEntity<Void> updateAnime(@RequestBody @Valid AnimePutRequest request) {
         log.debug("Request to update anime: {}", request);
 
         var anime = mapper.toAnime(request);
