@@ -1,6 +1,10 @@
 package academy.devdojo.producer;
 
 import academy.devdojo.domain.Producer;
+import academy.devdojo.dto.ProducerGetResponse;
+import academy.devdojo.dto.ProducerPostRequest;
+import academy.devdojo.dto.ProducerPostResponse;
+import academy.devdojo.dto.ProducerPutRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 

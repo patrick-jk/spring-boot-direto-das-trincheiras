@@ -72,6 +72,8 @@
                                 <interfaceOnly>true</interfaceOnly>
                                 <useTags>true</useTags>
                                 <documentationProvider>springdoc</documentationProvider>
+                                <implicitHeaders>true</implicitHeaders>
+                                <dateLibrary>java8-localdatetime</dateLibrary>
                             </configOptions>
                         </configuration>
                     </execution>

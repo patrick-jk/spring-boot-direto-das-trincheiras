@@ -27,7 +27,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/ProducerGetResponse'
       security:
-        - basicAuth: []
+        - basicAuth: [ ]
     put:
       tags:
         - producer-controller
@@ -42,7 +42,7 @@ paths:
         '200':
           description: OK
       security:
-        - basicAuth: []
+        - basicAuth: [ ]
     post:
       tags:
         - producer-controller
@@ -66,7 +66,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProducerPostResponse'
       security:
-        - basicAuth: []
+        - basicAuth: [ ]
   /v1/animes:
     get:
       tags:
@@ -88,7 +88,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/AnimeGetResponse'
       security:
-        - basicAuth: []
+        - basicAuth: [ ]
     put:
       tags:
         - anime-controller
@@ -103,7 +103,7 @@ paths:
         '200':
           description: OK
       security:
-        - basicAuth: []
+        - basicAuth: [ ]
     post:
       tags:
         - anime-controller
@@ -122,7 +122,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AnimePostResponse'
       security:
-        - basicAuth: []
+        - basicAuth: [ ]
   /v1/producers/{id}:
     get:
       tags:
@@ -143,7 +143,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProducerGetResponse'
       security:
-        - basicAuth: []
+        - basicAuth: [ ]
     delete:
       tags:
         - producer-controller
@@ -159,7 +159,7 @@ paths:
         '200':
           description: OK
       security:
-        - basicAuth: []
+        - basicAuth: [ ]
   /v1/animes/{id}:
     get:
       tags:
@@ -180,7 +180,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AnimeGetResponse'
       security:
-        - basicAuth: []
+        - basicAuth: [ ]
     delete:
       tags:
         - anime-controller
@@ -196,7 +196,7 @@ paths:
         '200':
           description: OK
       security:
-        - basicAuth: []
+        - basicAuth: [ ]
   /v1/animes/paginated:
     get:
       tags:
@@ -236,7 +236,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PageAnimeGetResponse'
       security:
-        - basicAuth: []
+        - basicAuth: [ ]
 components:
   schemas:
     ProducerPutRequest:
@@ -248,8 +248,10 @@ components:
         id:
           type: integer
           format: int64
+          x-field-extra-annotation: "@jakarta.validation.constraints.NotNull(message = \"The field 'id' cannot be null\")"
         name:
           type: string
+          x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank(message = \"The field 'name' is required\")"
     AnimePutRequest:
       required:
         - id
@@ -259,10 +261,10 @@ components:
         id:
           type: integer
           format: int64
-          x-field-extra-annotation: "@jakarta.validation.constraints.NotNull(message=\"The field 'id' cannot be null\")"
+          x-field-extra-annotation: "@jakarta.validation.constraints.NotNull(message = \"The field 'id' cannot be null\")"
         name:
           type: string
-          x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank(message=\"The field 'name' is required\")"
+          x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank(message = \"The field 'name' is required\")"
     ProducerPostRequest:
       required:
         - name
@@ -270,6 +272,7 @@ components:
       properties:
         name:
           type: string
+          x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank(message = \"The field 'name' is required\")"
     ProducerPostResponse:
       type: object
       properties:
@@ -285,7 +288,7 @@ components:
       properties:
         name:
           type: string
-          x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank(message=\"The field 'name' is required\")"
+          x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank(message = \"The field 'name' is required\")"
     AnimePostResponse:
       type: object
       properties:
