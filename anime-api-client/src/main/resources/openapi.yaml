@@ -27,7 +27,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/ProducerGetResponse'
       security:
-        - basicAuth: [ ]
+        - basicAuth: []
     put:
       tags:
         - producer-controller
@@ -42,7 +42,7 @@ paths:
         '200':
           description: OK
       security:
-        - basicAuth: [ ]
+        - basicAuth: []
     post:
       tags:
         - producer-controller
@@ -66,13 +66,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProducerPostResponse'
       security:
-        - basicAuth: [ ]
+        - basicAuth: []
   /v1/animes:
     get:
       tags:
         - anime-controller
-      summary: Get all animes
-      description: Get all animes available in the system
       operationId: findAllAnimes
       parameters:
         - name: name
@@ -82,15 +80,15 @@ paths:
             type: string
       responses:
         '200':
-          description: List all animes
+          description: OK
           content:
-            application/json:
+            '*/*':
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/AnimeGetResponse'
       security:
-        - basicAuth: [ ]
+        - basicAuth: []
     put:
       tags:
         - anime-controller
@@ -105,7 +103,7 @@ paths:
         '200':
           description: OK
       security:
-        - basicAuth: [ ]
+        - basicAuth: []
     post:
       tags:
         - anime-controller
@@ -117,14 +115,14 @@ paths:
               $ref: '#/components/schemas/AnimePostRequest'
         required: true
       responses:
-        '201':
-          description: Created
+        '200':
+          description: OK
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/AnimePostResponse'
       security:
-        - basicAuth: [ ]
+        - basicAuth: []
   /v1/producers/{id}:
     get:
       tags:
@@ -145,7 +143,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProducerGetResponse'
       security:
-        - basicAuth: [ ]
+        - basicAuth: []
     delete:
       tags:
         - producer-controller
@@ -161,12 +159,11 @@ paths:
         '200':
           description: OK
       security:
-        - basicAuth: [ ]
+        - basicAuth: []
   /v1/animes/{id}:
     get:
       tags:
         - anime-controller
-      summary: Get anime by id
       operationId: findAnimeById
       parameters:
         - name: id
@@ -177,19 +174,13 @@ paths:
             format: int64
       responses:
         '200':
-          description: Get anime by its id
+          description: OK
           content:
-            application/json:
+            '*/*':
               schema:
                 $ref: '#/components/schemas/AnimeGetResponse'
-        '404':
-          description: Anime Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DefaultErrorMessage'
       security:
-        - basicAuth: [ ]
+        - basicAuth: []
     delete:
       tags:
         - anime-controller
@@ -205,14 +196,13 @@ paths:
         '200':
           description: OK
       security:
-        - basicAuth: [ ]
+        - basicAuth: []
   /v1/animes/paginated:
     get:
       tags:
         - anime-controller
-      summary: Get all animes paginated
-      description: Get all animes available in the system paginated
       operationId: findAllAnimesPaginated
+      x-spring-paginated: true
       parameters:
         - name: page
           in: query
@@ -240,15 +230,13 @@ paths:
               type: string
       responses:
         '200':
-          description: List all animes paginated
+          description: OK
           content:
-            application/json:
+            '*/*':
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AnimeGetResponse'
+                $ref: '#/components/schemas/PageAnimeGetResponse'
       security:
-        - basicAuth: [ ]
+        - basicAuth: []
 components:
   schemas:
     ProducerPutRequest:
@@ -271,10 +259,10 @@ components:
         id:
           type: integer
           format: int64
-          x-field-extra-annotation: "@jakarta.validation.constraints.NotNull(message = \"The field 'id' cannot be null\")"
+          x-field-extra-annotation: "@jakarta.validation.constraints.NotNull(message=\"The field 'id' cannot be null\")"
         name:
           type: string
-          x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank(message = \"The field 'name' is required\")"
+          x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank(message=\"The field 'name' is required\")"
     ProducerPostRequest:
       required:
         - name
@@ -290,9 +278,6 @@ components:
           format: int64
         name:
           type: string
-        createdAt:
-          type: string
-          format: date-time
     AnimePostRequest:
       required:
         - name
@@ -330,14 +315,73 @@ components:
         name:
           type: string
           example: Overlord
-    DefaultErrorMessage:
+    PageAnimeGetResponse:
       type: object
       properties:
-        status:
+        totalPages:
           type: integer
           format: int32
-        message:
+        totalElements:
+          type: integer
+          format: int64
+        first:
+          type: boolean
+        last:
+          type: boolean
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnimeGetResponse'
+        number:
+          type: integer
+          format: int32
+        sort:
+          type: array
+          items:
+            $ref: '#/components/schemas/SortObject'
+        pageable:
+          $ref: '#/components/schemas/PageableObject'
+        numberOfElements:
+          type: integer
+          format: int32
+        empty:
+          type: boolean
+    PageableObject:
+      type: object
+      properties:
+        offset:
+          type: integer
+          format: int64
+        sort:
+          type: array
+          items:
+            $ref: '#/components/schemas/SortObject'
+        paged:
+          type: boolean
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        unpaged:
+          type: boolean
+    SortObject:
+      type: object
+      properties:
+        direction:
           type: string
+        nullHandling:
+          type: string
+        ascending:
+          type: boolean
+        property:
+          type: string
+        ignoreCase:
+          type: boolean
   securitySchemes:
     basicAuth:
       type: http

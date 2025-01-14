@@ -1,4 +1,9 @@
 {
+  "totalPages": 1,
+  "totalElements": 3,
+  "first": true,
+  "last": true,
+  "size": 3,
   "content": [
     {
       "id": 1,
@@ -13,29 +18,16 @@
       "name": "Mashle"
     }
   ],
+  "number": 0,
+  "sort": [],
   "pageable": {
+    "offset": 0,
+    "sort": [],
+    "paged": true,
     "pageNumber": 0,
     "pageSize": 3,
-    "sort": {
-      "empty": true,
-      "sorted": false,
-      "unsorted": true
-    },
-    "offset": 0,
-    "unpaged": false,
-    "paged": true
+    "unpaged": false
   },
-  "last": true,
-  "totalPages": 1,
-  "totalElements": 3,
-  "size": 3,
-  "number": 0,
-  "sort": {
-    "empty": true,
-    "sorted": false,
-    "unsorted": true
-  },
-  "first": true,
   "numberOfElements": 3,
   "empty": false
 }

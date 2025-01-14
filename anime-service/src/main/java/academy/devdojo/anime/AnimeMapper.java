@@ -1,9 +1,11 @@
 package academy.devdojo.anime;
 
 import academy.devdojo.domain.Anime;
+import academy.devdojo.dto.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -19,4 +21,6 @@ public interface AnimeMapper {
     AnimePostResponse toAnimePostResponse(Anime anime);
 
     List<AnimeGetResponse> toAnimeGetResponseList(List<Anime> animeList);
+
+    PageAnimeGetResponse toPageAnimeGetResponse(Page<Anime> jpaPageAnimeGetResponse);
 }
