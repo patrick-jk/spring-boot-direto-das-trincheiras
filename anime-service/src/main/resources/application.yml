@@ -28,3 +28,11 @@ server:
   tomcat:
     threads:
       max: 20
+
+management:
+  server:
+    port: 8989
+  endpoints:
+    web:
+      exposure:
+        include: "*"
