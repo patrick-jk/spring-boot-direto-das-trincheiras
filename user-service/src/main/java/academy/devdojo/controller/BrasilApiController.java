@@ -17,13 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @SecurityRequirement(name = "basicAuth")
 public class BrasilApiController {
-    private final BrasilApiService service;
 
-    @GetMapping("/{cep}")
-    public ResponseEntity<CepGetResponse> findCep(@PathVariable String cep) {
-        log.info("request received to find cep");
-        var cepGetResponse = service.findCep(cep);
+  private final BrasilApiService service;
 
-        return ResponseEntity.ok(cepGetResponse);
-    }
+  @GetMapping("/{cep}")
+  public ResponseEntity<CepGetResponse> findCep(@PathVariable String cep) {
+    log.info("request received to find cep");
+    var cepGetResponse = service.findCep(cep);
+
+    return ResponseEntity.ok(cepGetResponse);
+  }
 }

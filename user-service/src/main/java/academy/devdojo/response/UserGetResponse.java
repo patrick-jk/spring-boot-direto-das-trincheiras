@@ -10,12 +10,13 @@ import lombok.Setter;
 @Builder
 
 public class UserGetResponse {
-    @Schema(description = "User's id", example = "1")
-    private Long id;
-    @Schema(description = "User's first name", example = "Tom")
-    private String firstName;
-    @Schema(description = "User's last name", example = "Araya")
-    private String lastName;
-    @Schema(description = "User's email. Must be unique", example = "tomaraya@slayer.com")
-    private String email;
+
+  @Schema(description = "User's id", example = "1")
+  private Long id;
+  @Schema(description = "User's first name", example = "Tom")
+  private String firstName;
+  @Schema(description = "User's last name", example = "Araya")
+  private String lastName;
+  @Schema(description = "User's email. Must be unique", example = "tomaraya@slayer.com")
+  private String email;
 }

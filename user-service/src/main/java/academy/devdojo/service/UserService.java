@@ -5,58 +5,54 @@ import academy.devdojo.exception.EmailAlreadyExistsException;
 import academy.devdojo.exception.NotFoundException;
 import academy.devdojo.mapper.UserMapper;
 import academy.devdojo.repository.UserRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserRepository repository;
-    private final UserMapper mapper;
 
-    public List<User> findAll(String firstName) {
-        return firstName == null ? repository.findAll() : repository.findByFirstNameIgnoreCase(firstName);
-    }
+  private final UserRepository repository;
+  private final UserMapper mapper;
 
-    public User findByIdOrThrowNotFound(Long id) {
-        return repository.findById(id).orElseThrow(() -> new NotFoundException("User not Found"));
-    }
+  public List<User> findAll(String firstName) {
+    return firstName == null ? repository.findAll() : repository.findByFirstNameIgnoreCase(firstName);
+  }
 
-    //    @Transactional(rollbackFor = Exception.class)
-    public User save(User user) {
-        assertEmailDoesNotExist(user.getEmail());
-        return repository.save(user);
-    }
+  public User findByIdOrThrowNotFound(Long id) {
+    return repository.findById(id).orElseThrow(() -> new NotFoundException("User not Found"));
+  }
 
-    public void delete(Long id) {
-        var user = findByIdOrThrowNotFound(id);
-        repository.delete(user);
-    }
+  //    @Transactional(rollbackFor = Exception.class)
+  public User save(User user) {
+    assertEmailDoesNotExist(user.getEmail());
+    return repository.save(user);
+  }
 
-    public void update(User userToUpdate) {
-        var savedUser = findByIdOrThrowNotFound(userToUpdate.getId());
-        assertEmailDoesNotExist(userToUpdate.getEmail(), userToUpdate.getId());
+  public void delete(Long id) {
+    var user = findByIdOrThrowNotFound(id);
+    repository.delete(user);
+  }
 
-        var userWithPasswordAndRoles = mapper.toUserWithPasswordAndRoles(userToUpdate, userToUpdate.getPassword(), savedUser);
+  public void update(User userToUpdate) {
+    var savedUser = findByIdOrThrowNotFound(userToUpdate.getId());
+    assertEmailDoesNotExist(userToUpdate.getEmail(), userToUpdate.getId());
 
-        repository.save(userWithPasswordAndRoles);
-    }
+    var userWithPasswordAndRoles = mapper.toUserWithPasswordAndRoles(userToUpdate, userToUpdate.getPassword(), savedUser);
 
-    public void assertUserExists(Long id) {
-        findByIdOrThrowNotFound(id);
-    }
+    repository.save(userWithPasswordAndRoles);
+  }
 
-    public void assertEmailDoesNotExist(String email) {
-        repository.findByEmail(email).ifPresent(this::throwEmailExistsException);
-    }
+  public void assertEmailDoesNotExist(String email) {
+    repository.findByEmail(email).ifPresent(this::throwEmailExistsException);
+  }
 
-    public void assertEmailDoesNotExist(String email, Long id) {
-        repository.findByEmailAndIdNot(email, id).ifPresent(this::throwEmailExistsException);
-    }
+  public void assertEmailDoesNotExist(String email, Long id) {
+    repository.findByEmailAndIdNot(email, id).ifPresent(this::throwEmailExistsException);
+  }
 
-    private void throwEmailExistsException(User user) {
-        throw new EmailAlreadyExistsException("E-mail %s already exists".formatted(user.getEmail()));
-    }
+  private void throwEmailExistsException(User user) {
+    throw new EmailAlreadyExistsException("E-mail %s already exists".formatted(user.getEmail()));
+  }
 }

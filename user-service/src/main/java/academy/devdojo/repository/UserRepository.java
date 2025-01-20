@@ -1,15 +1,15 @@
 package academy.devdojo.repository;
 
 import academy.devdojo.domain.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    List<User> findByFirstNameIgnoreCase(String firstName);
 
-    Optional<User> findByEmail(String email);
+  List<User> findByFirstNameIgnoreCase(String firstName);
 
-    Optional<User> findByEmailAndIdNot(String email, Long id);
+  Optional<User> findByEmail(String email);
+
+  Optional<User> findByEmailAndIdNot(String email, Long id);
 }
