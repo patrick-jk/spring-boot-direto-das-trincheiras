@@ -16,5 +16,5 @@ server:
     include-message: always
 
 brasil-api:
-  base-url: https://localhost:8085/api
+  base-url: http://localhost:${wiremock.server.port}/api
   cep-uri: /cep/v1/{cep}

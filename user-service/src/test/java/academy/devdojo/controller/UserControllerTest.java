@@ -2,6 +2,7 @@ package academy.devdojo.controller;
 
 import academy.devdojo.commons.FileUtils;
 import academy.devdojo.commons.UserUtils;
+import academy.devdojo.config.BrasilApiConfigurationProperties;
 import academy.devdojo.domain.User;
 import academy.devdojo.repository.ProfileRepository;
 import academy.devdojo.repository.UserProfileRepository;
@@ -14,6 +15,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
@@ -33,6 +35,7 @@ import java.util.stream.Stream;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ComponentScan(basePackages = {"academy.devdojo"})
 @WithMockUser
+@EnableConfigurationProperties(value = BrasilApiConfigurationProperties.class)
 class UserControllerTest {
     private static final String URL = "/v1/users";
     @Autowired
