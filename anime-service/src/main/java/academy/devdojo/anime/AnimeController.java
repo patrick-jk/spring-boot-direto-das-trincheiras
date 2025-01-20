@@ -1,13 +1,18 @@
 package academy.devdojo.anime;
 
 import academy.devdojo.api.AnimeControllerApi;
-import academy.devdojo.dto.*;
+import academy.devdojo.dto.AnimeGetResponse;
+import academy.devdojo.dto.AnimePostRequest;
+import academy.devdojo.dto.AnimePostResponse;
+import academy.devdojo.dto.AnimePutRequest;
+import academy.devdojo.dto.PageAnimeGetResponse;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
@@ -15,9 +20,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("v1/animes")
@@ -26,83 +38,88 @@ import java.util.List;
 @Tag(name = "Anime API", description = "Anime related endpoints")
 @SecurityRequirement(name = "basicAuth")
 public class AnimeController implements AnimeControllerApi {
-    private final AnimeMapper mapper;
-    private final AnimeService service;
 
-    @Override
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<AnimeGetResponse>> findAllAnimes(@RequestParam(required = false) String name) {
-        log.debug("Request received to list all animes, param name '{}'", name);
+  private final AnimeMapper mapper;
+  private final AnimeService service;
 
-        var animes = service.findAll(name);
+  @Override
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<AnimeGetResponse>> findAllAnimes(@RequestParam(required = false) String name) {
+    log.debug("Request received to list all animes, param name '{}'", name);
 
-        var animeGetResponses = mapper.toAnimeGetResponseList(animes);
+    var animes = service.findAll(name);
 
-        return ResponseEntity.ok(animeGetResponses);
-    }
+    var animeGetResponses = mapper.toAnimeGetResponseList(animes);
 
-    @Override
-    @GetMapping("/paginated")
-    public ResponseEntity<PageAnimeGetResponse> findAllAnimesPaginated(
-            @Min(0) @Parameter(name = "page", description = "Zero-based page index (0..N)", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
-            @Min(1) @Parameter(name = "size", description = "The size of the page to be returned", in = ParameterIn.QUERY) @Valid @RequestParam(value = "size", required = false, defaultValue = "20") Integer size,
-            @Parameter(name = "sort", description = "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.", in = ParameterIn.QUERY) @Valid @RequestParam(value = "sort", required = false) List<String> sort,
-            @ParameterObject final Pageable pageable
-    ) {
-        log.debug("Request received to list all animes paginated");
+    return ResponseEntity.ok(animeGetResponses);
+  }
 
-        var jpaPageAnimeGetResponse = service.findAllPaginated(pageable);
-        var pageAnimeGetResponse = mapper.toPageAnimeGetResponse(jpaPageAnimeGetResponse);
+  @Override
+  @GetMapping("/paginated")
+  public ResponseEntity<PageAnimeGetResponse> findAllAnimesPaginated(
+      @Min(0) @Parameter(name = "page", description = "Zero-based page index (0..N)",
+          in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+      @Min(1) @Parameter(name = "size", description = "The size of the page to be returned",
+          in = ParameterIn.QUERY) @Valid @RequestParam(value = "size", required = false, defaultValue = "20") Integer size,
+      @Parameter(name = "sort", description = "Sorting criteria in the format: property,(asc|desc)."
+          + " Default sort order is ascending. Multiple sort criteria are supported.",
+          in = ParameterIn.QUERY) @Valid @RequestParam(value = "sort", required = false) List<String> sort,
+      @ParameterObject final Pageable pageable
+  ) {
+    log.debug("Request received to list all animes paginated");
 
-        return ResponseEntity.ok(pageAnimeGetResponse);
-    }
+    var jpaPageAnimeGetResponse = service.findAllPaginated(pageable);
+    var pageAnimeGetResponse = mapper.toPageAnimeGetResponse(jpaPageAnimeGetResponse);
 
-    @Override
-    @GetMapping("{id}")
-    public ResponseEntity<AnimeGetResponse> findAnimeById(@PathVariable Long id) {
-        log.debug("Request to find anime by id: {}", id);
+    return ResponseEntity.ok(pageAnimeGetResponse);
+  }
 
-        var anime = service.findByIdOrThrowNotFound(id);
+  @Override
+  @GetMapping("{id}")
+  public ResponseEntity<AnimeGetResponse> findAnimeById(@PathVariable Long id) {
+    log.debug("Request to find anime by id: {}", id);
 
-        var animeGetResponse = mapper.toAnimeGetResponse(anime);
+    var anime = service.findByIdOrThrowNotFound(id);
 
-        return ResponseEntity.ok(animeGetResponse);
-    }
+    var animeGetResponse = mapper.toAnimeGetResponse(anime);
 
-    @Override
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AnimePostResponse> saveAnime(@RequestBody @Valid AnimePostRequest request) {
-        log.debug("Request to save anime: {}", request);
+    return ResponseEntity.ok(animeGetResponse);
+  }
 
-        var anime = mapper.toAnime(request);
+  @Override
+  @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  public ResponseEntity<AnimePostResponse> saveAnime(@RequestBody @Valid AnimePostRequest request) {
+    log.debug("Request to save anime: {}", request);
 
-        var animeSaved = service.save(anime);
+    var anime = mapper.toAnime(request);
 
-        var animePostResponse = mapper.toAnimePostResponse(animeSaved);
+    var animeSaved = service.save(anime);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(animePostResponse);
-    }
+    var animePostResponse = mapper.toAnimePostResponse(animeSaved);
 
-    @Override
-    @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteAnimeById(@PathVariable Long id) {
-        log.debug("Request to delete anime by id: {}", id);
+    return ResponseEntity.status(HttpStatus.CREATED).body(animePostResponse);
+  }
 
-        service.delete(id);
+  @Override
+  @DeleteMapping("{id}")
+  public ResponseEntity<Void> deleteAnimeById(@PathVariable Long id) {
+    log.debug("Request to delete anime by id: {}", id);
 
-        return ResponseEntity.noContent().build();
-    }
+    service.delete(id);
 
-    @Override
-    @PutMapping
-    public ResponseEntity<Void> updateAnime(@RequestBody @Valid AnimePutRequest request) {
-        log.debug("Request to update anime: {}", request);
+    return ResponseEntity.noContent().build();
+  }
 
-        var anime = mapper.toAnime(request);
+  @Override
+  @PutMapping
+  public ResponseEntity<Void> updateAnime(@RequestBody @Valid AnimePutRequest request) {
+    log.debug("Request to update anime: {}", request);
 
-        service.update(anime);
+    var anime = mapper.toAnime(request);
 
-        return ResponseEntity.noContent().build();
-    }
+    service.update(anime);
+
+    return ResponseEntity.noContent().build();
+  }
 }
