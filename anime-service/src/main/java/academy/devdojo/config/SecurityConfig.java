@@ -35,8 +35,8 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(WHITE_LIST).permitAll()
-            .requestMatchers("v1/animes/**").hasRole("USER")
-            .requestMatchers("v1/producers/**").hasRole("USER")
+            .requestMatchers("/v1/animes/**").hasRole("USER")
+            .requestMatchers("/v1/producers/**").hasRole("USER")
             .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
             .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults())
