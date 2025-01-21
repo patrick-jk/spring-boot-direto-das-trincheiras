@@ -1,0 +1,10 @@
+INSERT INTO user_service.user (id, email, first_name, last_name, password, roles) VALUES (1, 'jbonham@gmail.com', 'John', 'Bonham', '{bcrypt}$2a$10$qfIQOie21m1ZV3xo11y1wuaZe3uVITCSv6enQUhnxqF2Azmz/1uBa', 'USER');
+INSERT INTO user_service.user (id, email, first_name, last_name, password, roles) VALUES (3, 'billyjoe@greenday.com', 'Billy', 'Joe', '', 'USER');
+INSERT INTO user_service.user (id, email, first_name, last_name, password, roles) VALUES (4, 'dmustaine@megadeth.com', 'Dave', 'Mustaine', '', 'USER');
+INSERT INTO user_service.user (id, email, first_name, last_name, password, roles) VALUES (5, 'tomaraya@slayer.com', 'Tom', 'Araya', '', 'USER');
+INSERT INTO user_service.user (id, email, first_name, last_name, password, roles) VALUES (6, 'william.suane@devdojo.academy', 'william', 'suane', '{bcrypt}$2a$10$WYI.KZFvJWk6t/48BfBoP.BhdpoprlhkPqKI21bveXCdGeXV0rVY2', 'ADMIN');
+INSERT INTO user_service.user_profile (id, profile_id, user_id) VALUES (1, 1, 1);
+INSERT INTO user_service.profile (id, description, name) VALUES (1, 'Regular user with regular permissions', 'Regular User');
+INSERT INTO user_service.profile (id, description, name) VALUES (2, 'Administrator', 'Admin');
+INSERT INTO user_service.user_profile (id, profile_id, user_id) VALUES (2, 1, 3);
+INSERT INTO user_service.user_profile (id, profile_id, user_id) VALUES (3, 2, 4);
